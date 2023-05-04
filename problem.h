@@ -191,14 +191,14 @@ namespace Gascoigne
     
   public:
       
-    virtual void      GetScalarName   (int i, std::string& s_name) 
+    virtual void      GetScalarName   (IndexType i, std::string& s_name)
     {
       if (i==0) s_name = "vx";
       if (i==1) s_name = "vy";
     }
-    virtual const int GetNVectors     () const { return 1; }
-    virtual void      GetVectorName   (int i, std::string& s_name) const { s_name = "V";}
-    virtual void      GetVectorIndices(int i, std::array<int,3>& fa) const
+    virtual const IndexType GetNVectors     () const { return 1; }
+    virtual void      GetVectorName   (IndexType i, std::string& s_name) const { s_name = "V";}
+    virtual void      GetVectorIndices(IndexType i, std::array<int,3>& fa) const
     {
       fa[0]=0; fa[1]=1; fa[2]=-1;
     }
@@ -209,16 +209,16 @@ namespace Gascoigne
   {
     
   public:
-      
-    virtual void      GetScalarName   (int i, std::string& s_name) 
+
+    virtual void      GetScalarName   (IndexType i, std::string& s_name)
     {
       if (i==0) s_name = "p";
       if (i==1) s_name = "vx";
       if (i==2) s_name = "vy";
     }
-    virtual const int GetNVectors     () const { return 1; }
-    virtual void      GetVectorName   (int i, std::string& s_name) const { s_name = "V";}
-    virtual void      GetVectorIndices(int i, std::array<int,3>& fa) const
+    virtual const IndexType GetNVectors     () const { return 1; }
+    virtual void      GetVectorName   (IndexType i, std::string& s_name) const { s_name = "V";}
+    virtual void      GetVectorIndices(IndexType i, std::array<int,3>& fa) const
     {
       fa[0]=1; fa[1]=2; fa[2]=-1;
     }
@@ -229,13 +229,13 @@ namespace Gascoigne
   {
     
   public:
-      
-    virtual void      GetScalarName   (int i, std::string& s_name) 
+
+    virtual void      GetScalarName   (IndexType i, std::string& s_name)
     {
       if (i==0) s_name = "h";
       if (i==1) s_name = "A";
     }
-    virtual const int GetNVectors     () const { return 0; }
+    virtual const IndexType GetNVectors() const { return 0; }
   };
 
 
