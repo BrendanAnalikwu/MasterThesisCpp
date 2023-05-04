@@ -7,17 +7,17 @@ namespace Gascoigne
   {
     
   public:
-    double NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo);
-    void newton(Matrix& A, VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info);
+    double NewtonUpdate(double& rr, Vector& x, Vector& dx, Vector& r, const Vector& f, NLInfo& nlinfo);
+    void newton(Matrix& A, Vector& u, const Vector& f, Vector& r, Vector& w, NLInfo& info);
     
     ///--------------- NUR Fuer FV transprt 
     
-    void AssembleMatrix(Matrix& A, VectorInterface& u)
+    void AssembleMatrix(Matrix& A, Vector& u)
     {
       GetSolver()->MatrixZero(A);
       GetSolver()->AssembleMatrix(A,u,1.);
     }
-    void ComputeIlu(Matrix& A, VectorInterface &u)
+    void ComputeIlu(Matrix& A, Vector &u)
     {
       GetSolver()->ComputeIlu(A, u);
     }

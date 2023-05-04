@@ -166,10 +166,10 @@ namespace Gascoigne
  
   
     // vectors for solution and right hand side
-    VectorInterface u("u"), f("f"), oldu("oldu"),other("other");
+    Vector u("u"), f("f"), oldu("oldu"),other("other");
     Matrix A("A");
-    
-    VectorInterface DGH("DGH","cell");
+
+    Vector DGH("DGH","cell");
 
     for (int ADAITER=0;ADAITER<1;++ADAITER)
       {

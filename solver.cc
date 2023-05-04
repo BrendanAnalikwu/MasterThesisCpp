@@ -9,7 +9,7 @@ int writeiter;
 using namespace std;
 
 namespace Gascoigne{
-double MyMLS::NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, VectorInterface& r, const VectorInterface& f, NLInfo& nlinfo)
+double MyMLS::NewtonUpdate(double& rr, Vector& x, Vector& dx, Vector& r, const Vector& f, NLInfo& nlinfo)
 {
   const CGInfo& linfo = nlinfo.GetLinearInfo();
   bool lex  = linfo.control().status()=="exploded";
@@ -120,7 +120,7 @@ double MyMLS::NewtonUpdate(double& rr, VectorInterface& x, VectorInterface& dx, 
 }
 
 
-  void MyMLS::newton(Matrix& A, VectorInterface& u, const VectorInterface& f, VectorInterface& r, VectorInterface& w, NLInfo& info)
+  void MyMLS::newton(Matrix& A, Vector& u, const Vector& f, Vector& r, Vector& w, NLInfo& info)
 {
   DDD=1.0;
 
