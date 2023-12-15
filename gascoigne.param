@@ -1,6 +1,6 @@
 //Block Loop
 
-niter       96
+niter       3
 
 
 writevtk    0
@@ -29,7 +29,7 @@ compress    0
 //Block Mesh
 
 dimension   2
-prerefine   6
+prerefine   8
 gridname sq500.inp
 
 //Block BoundaryManager
@@ -54,7 +54,7 @@ functional 1 1
 //Block MultiLevelSolver
 
 linearsolve	mg // benchmark
-linearsolve	direct
+linearsolve	mg
 nonlinear_rho	0.1
 nonlinear_tol	1.e-4
 nonlinear_globaltol	1.e-13
@@ -80,7 +80,7 @@ matrixtype block
 
 discname       CGQ1
 
-ndirect     100000
+ndirect     100
 
 iterpre 4
 iterpost 4
