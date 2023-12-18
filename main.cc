@@ -417,19 +417,9 @@ int main(int argc, char** argv)
     // sea ice mometum equation
     SeaIceProblem LPD;
     LPD.BasicInit(paramfile);
-    // transport of h and A
-    TGProblem TGPD;
-    TGPD.BasicInit(paramfile);
-    // only to visualize the shear stress
-    OtherProblem OPD;
-    OPD.BasicInit(paramfile);
-
 
     ProblemContainer PC;
     PC.AddProblem("seaice", &LPD);
-    PC.AddProblem("tg", &TGPD);
-    PC.AddProblem("other", &OPD);
-
 
     // output functionals
     FunctionalContainer FC;
@@ -445,7 +435,6 @@ int main(int argc, char** argv)
     MeanDiv MDIV(paramfile);
     MeanShear MShear(paramfile);
 
-
     FC.AddFunctional("0 Kinetic", &K);
     FC.AddFunctional("1 Mass", &M);
     FC.AddFunctional("3 MeanDIV", &MDIV);
@@ -453,8 +442,6 @@ int main(int argc, char** argv)
     FC.AddFunctional("3 Delta", &D);
     FC.AddFunctional("4 MeanSpeed", &MS);
     FC.AddFunctional("5 MeanDeformation", &MD);
-
-
 
     // loop for program control
     Loop loop;

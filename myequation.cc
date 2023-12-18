@@ -50,7 +50,7 @@ void SeaIceData::BasicInit(const ParamFile& paramfile)
 
 // sea ice mometum equation
 void MyEquation::point(double h, const FemFunction& U, const Vertex2d& v) const
-{
+{  //TODO: customise
     // Stabilisierung muss auch auf Dimensionslose groessen transformiert werden
     h_ = h;
 
@@ -82,7 +82,6 @@ void MyEquation::Form(VectorIterator b, const FemFunction& U, const TestFunction
     double vd_y = U[1].m() - uwy;
 
     double vd = sqrt(vd_x * vd_x + vd_y * vd_y + 1.e-8);
-
 
     b[0] += WZ * vd * (vd_x * cos(data.theta_w) - vd_y * sin(data.theta_w)) * N.m();
     b[1] += WZ * vd * (vd_y * cos(data.theta_w) + vd_x * sin(data.theta_w)) * N.m();
@@ -244,48 +243,6 @@ void MyEquation::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction
 
 
 
-}
-
-
-
-///////////////// Other ---> visualize shear stress named a
-
-
-void OtherEquation::Form(VectorIterator b, const FemFunction& U, const TestFunction& N) const
-{
-    b[0] += U[0].m() * N.m();
-    b[1] += U[1].m() * N.m();
-
-    double dmin = DELTAMIN * data.Tref;
-    double DELTAsquare = dmin * dmin;
-
-    DELTAsquare +=
-            (1.0 + pow(data.ellipse, -2.0)) * ((*UU)[0].x() * (*UU)[0].x() + (*UU)[1].y() * (*UU)[1].y())
-            + pow(data.ellipse, -2.0) * pow((*UU)[0].y() + (*UU)[1].x(), 2.0)
-            + 2.0 * (1.0 - pow(data.ellipse, -2.0)) * (*UU)[0].x() * (*UU)[1].y();
-
-
-    double DELTA = sqrt(DELTAsquare);
-    double a = ((*UU)[0].x() - (*UU)[1].y()) * ((*UU)[0].x() - (*UU)[1].y()) +
-               ((*UU)[0].y() + (*UU)[1].x()) * ((*UU)[0].y() + (*UU)[1].x());
-
-
-    //--------------FV---------------------------------- 
-    double ef = exp(-data.C * (1.0 - (*DGH)[1]));
-    double eta = data.Pstern * (*DGH)[0] * ef / (2.0 * DELTA) / 4.0;
-    //--------------FV----------------------------------
-    b[0] -= log(sqrt(a)) / log(10) * N.m();
-    b[1] -= log(eta * data.Tref) / log(10) * N.m();
-
-
-}
-
-/*-----------------------------------------*/
-
-void OtherEquation::Matrix(EntryMatrix& A, const FemFunction& U, const TestFunction& M, const TestFunction& N) const
-{
-    A(0, 0) += M.m() * N.m();
-    A(1, 1) += M.m() * N.m();
 }
 
 }

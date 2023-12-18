@@ -21,7 +21,7 @@ using namespace std;
 namespace Gascoigne
 {
 double WindX(double x, double y, double t)
-{
+{  // TODO: customise
     //    return (x-250.)/20.0;
 
     double tP = t;
@@ -209,47 +209,6 @@ public:
     }
 };
 
-
-class MyCIWater : public ComponentInformationBase
-{
-
-public:
-
-    virtual void GetScalarName(IndexType i, std::string& s_name)
-    {
-        if (i == 0) s_name = "p";
-        if (i == 1) s_name = "vx";
-        if (i == 2) s_name = "vy";
-    }
-
-    virtual const IndexType GetNVectors() const { return 1; }
-
-    virtual void GetVectorName(IndexType i, std::string& s_name) const { s_name = "V"; }
-
-    virtual void GetVectorIndices(IndexType i, std::array<int, 3>& fa) const
-    {
-        fa[0] = 1;
-        fa[1] = 2;
-        fa[2] = -1;
-    }
-};
-
-
-class MyCITr : public ComponentInformationBase
-{
-
-public:
-
-    virtual void GetScalarName(IndexType i, std::string& s_name)
-    {
-        if (i == 0) s_name = "h";
-        if (i == 1) s_name = "A";
-    }
-
-    virtual const IndexType GetNVectors() const { return 0; }
-};
-
-
 // main class for defining the problem to solve
 class SeaIceProblem : public ProblemDescriptorBase
 {
@@ -283,78 +242,6 @@ public:
         //
         ProblemDescriptorBase::BasicInit(pf);
     }
-};
-
-
-// class for specifying Dirichlet data
-class OtherDirichletData : public DirichletData
-{
-public:
-    OtherDirichletData(const ParamFile& pf) : DirichletData(pf) {}
-
-    std::string GetName() const { return "Transport Dirichlet Data"; }
-
-    void operator()(DoubleVector& b, const Vertex2d& v, int col) const
-    {
-        b.zero();
-    }
-
-};
-
-// main class for defining the problem to solve
-class TGProblem : public ProblemDescriptorBase
-{
-public:
-    SeaIceData data;
-
-    std::string GetName() const { return "TG Problem"; }
-
-
-    void BasicInit(const ParamFile& pf)
-    {
-        data.BasicInit(pf);
-
-        GetEquationPointer() = new TransportEquation(pf);// Not in use !!!!!
-
-        ProblemDescriptorBase::BasicInit(pf);
-
-    }
-};
-
-// to visualize the sheat stress
-
-class OtherProblem : public ProblemDescriptorBase
-{
-    SeaIceData data;
-public:
-
-    Equation* NewEquation() const
-    {
-        return new OtherEquation(data);
-    }
-
-
-    std::string GetName() const { return "Other Problem"; }
-
-    void BasicInit(const ParamFile& pf)
-    {
-        data.BasicInit(pf);
-
-        // equation to solve
-        GetEquationPointer() = new OtherEquation(data);
-        GetDirichletDataPointer() = new OtherDirichletData(pf);
-
-        ProblemDescriptorBase::BasicInit(pf);
-        //GetPeriodicDataPointer() = new MyPeriodic;
-    }
-};
-
-
-class MyBM : public BoundaryManager
-{
-    IntSet _nocolors;
-public:
-    const IntSet& GetDirichletDataColors() const { return _nocolors; }
 };
 
 }
