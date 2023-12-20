@@ -7,6 +7,7 @@
 #include  "fmatrixblock.h"
 #include  "compose_name.h"
 #include <algorithm>
+#include "functions.h"
 
 using namespace std;
 
@@ -97,6 +98,10 @@ void Loop::run(const std::string& problemlabel)
     int prerefine;
     string _reloadu, _reloadh, _reloadoldu;
 
+    //
+    DoubleVector H_x_c, H_y_c, H_x_s, H_y_s;
+    DoubleVector H_i_x_c, H_i_y_c, H_i_x_s, H_i_y_s;
+
     // Load parameters from parameter file
     // Each block needs a different scope
     {
@@ -126,11 +131,32 @@ void Loop::run(const std::string& problemlabel)
         DataFormatHandler DFH;
         DFH.insert("deltamin", &DELTAMIN, 0.);
         DFH.insert("Tref", &tref, 0.);
+        DFH.insert("H_i_x_c", &H_i_x_c);
+        DFH.insert("H_x_c", &H_x_c);
+        DFH.insert("H_i_y_c", &H_i_y_c);
+        DFH.insert("H_y_c", &H_y_c);
+        DFH.insert("H_i_x_s", &H_i_x_s);
+        DFH.insert("H_x_s", &H_x_s);
+        DFH.insert("H_i_y_s", &H_i_y_s);
+        DFH.insert("H_y_s", &H_y_s);
         FileScanner FS(DFH);
         FS.NoComplain();
         FS.readfile(_paramfile, "Equation");
         assert(DELTAMIN > 0.0);
         assert(tref > 0.0);
+        assert(H_i_x_c.size()==H_x_c.size());
+        assert(H_i_y_c.size()==H_y_c.size());
+        assert(H_i_x_s.size()==H_x_s.size());
+        assert(H_i_y_s.size()==H_y_s.size());
+
+        map<double, double> H_x_cos;
+        map<double, double> H_y_cos;
+        map<double, double> H_x_sin;
+        map<double, double> H_y_sin;
+        for(int i=0; i<H_i_x_c.size() ++i) { H_x_cos[H_i_x_c[i]] = H_x_c; }
+        for(int i=0; i<H_i_y_c.size() ++i) { H_y_cos[H_i_y_c[i]] = H_y_c; }
+        for(int i=0; i<H_i_x_s.size() ++i) { H_x_sin[H_i_x_s[i]] = H_x_s; }
+        for(int i=0; i<H_i_y_s.size() ++i) { H_y_sin[H_i_y_s[i]] = H_y_s; }
     }
     {
         string discname;
@@ -202,7 +228,7 @@ void Loop::run(const std::string& problemlabel)
 
         // fill H and A with initial values
         // TODO: make variable
-        glDGH(q, 0) = 0.005 * sin(60 * x) + 0.005 * sin(30 * y) + 0.3;
+        glDGH(q, 0) = fourier_sum(H_x_cos, H_x_sin, x) * fourier_sum(H_y_cos, H_y_sin, y);
         glDGH(q, 1) = 1.0;
 
         // Increase ix, iy indices

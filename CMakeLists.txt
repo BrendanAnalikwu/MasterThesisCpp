@@ -18,6 +18,6 @@ INCLUDE_DIRECTORIES(${GASCOIGNE_INCLUDE_DIRS})
 
 
 #### Executables to be generated
-ADD_EXECUTABLE("bench" loop.cc main.cc myequation.cc solver.cc)
+ADD_EXECUTABLE("bench" loop.cc main.cc myequation.cc solver.cc functions.cpp)
 
 

@@ -127,6 +127,15 @@ f               0.0
 theta_w		0.0
 theta_a		0.0
 
+H_i_x_c     1 0
+H_x_c       1 0.3
+H_i_x_s     1 60.
+H_x_s       1 0.005
+H_i_y_c     1 0
+H_y_c       1 1.
+H_i_y_s     1 30.
+H_y_s       1 0.016667
+
 
 
 //Block Nix
