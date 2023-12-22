@@ -2,10 +2,11 @@
 #define BENCHMARK_FUNCTIONS_H
 
 #include <cmath>
+#include <map>
 
 namespace Gascoigne
 {
-double fourier_sum(map<double, double> coef_cos, map<double, double> coef_sin, double x);
+double fourier_sum(std::map<double, double> coef_cos, std::map<double, double> coef_sin, double x);
 }
 
 

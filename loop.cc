@@ -127,6 +127,10 @@ void Loop::run(const std::string& problemlabel)
         FS.NoComplain();
         FS.readfile(_paramfile, "Mesh");
     }
+    map<double, double> H_x_cos;
+    map<double, double> H_y_cos;
+    map<double, double> H_x_sin;
+    map<double, double> H_y_sin;
     {
         DataFormatHandler DFH;
         DFH.insert("deltamin", &DELTAMIN, 0.);
@@ -149,14 +153,10 @@ void Loop::run(const std::string& problemlabel)
         assert(H_i_x_s.size()==H_x_s.size());
         assert(H_i_y_s.size()==H_y_s.size());
 
-        map<double, double> H_x_cos;
-        map<double, double> H_y_cos;
-        map<double, double> H_x_sin;
-        map<double, double> H_y_sin;
-        for(int i=0; i<H_i_x_c.size() ++i) { H_x_cos[H_i_x_c[i]] = H_x_c; }
-        for(int i=0; i<H_i_y_c.size() ++i) { H_y_cos[H_i_y_c[i]] = H_y_c; }
-        for(int i=0; i<H_i_x_s.size() ++i) { H_x_sin[H_i_x_s[i]] = H_x_s; }
-        for(int i=0; i<H_i_y_s.size() ++i) { H_y_sin[H_i_y_s[i]] = H_y_s; }
+        for(int i=0; i<H_i_x_c.size(); ++i) { H_x_cos[H_i_x_c[i]] = H_x_c[i]; }
+        for(int i=0; i<H_i_y_c.size(); ++i) { H_y_cos[H_i_y_c[i]] = H_y_c[i]; }
+        for(int i=0; i<H_i_x_s.size(); ++i) { H_x_sin[H_i_x_s[i]] = H_x_s[i]; }
+        for(int i=0; i<H_i_y_s.size(); ++i) { H_y_sin[H_i_y_s[i]] = H_y_s[i]; }
     }
     {
         string discname;
@@ -207,8 +207,6 @@ void Loop::run(const std::string& problemlabel)
     GlobalVector& glDGH = GetMultiLevelSolver()->GetSolver()->GetGV(DGH);
 
     // Fill mappings by looping over cells
-    int ix = 0;
-    int iy = 0;
     for (int q = 0; q < ncells; ++q)
     {
         // Get vertex indices of cell q
@@ -220,8 +218,6 @@ void Loop::run(const std::string& problemlabel)
 
         // Fill mappings
         MidPointToCellNumber[v] = q;
-        FV[ix][iy] = q;
-        FV_midpoint[ix][iy] = v;
 
         double x = v.x();
         double y = v.y();
@@ -230,6 +226,15 @@ void Loop::run(const std::string& problemlabel)
         // TODO: make variable
         glDGH(q, 0) = fourier_sum(H_x_cos, H_x_sin, x) * fourier_sum(H_y_cos, H_y_sin, y);
         glDGH(q, 1) = 1.0;
+    }
+
+    // Fill FV and FV_midpoint mappings
+    int ix = 0;
+    int iy = 0;
+    for (const auto& it: MidPointToCellNumber)
+    {
+        FV[ix][iy] = it.second;
+        FV_midpoint[ix][iy] = it.first;
 
         // Increase ix, iy indices
         ++iy;
@@ -248,7 +253,7 @@ void Loop::run(const std::string& problemlabel)
     cout << "------------------------------" << endl << endl;
 
     // Initialise momentum with initial conditions
-    InitSolution(u);
+//    InitSolution(u);
     GlobalVector& gu = GetMultiLevelSolver()->GetSolver()->GetGV(u);
     //TODO: implement initital conditions
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
@@ -298,7 +303,7 @@ void Loop::run(const std::string& problemlabel)
         for (int ii = 1; ii <= NSUB; ++ii)
             FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), dtFV, M);
 
-        GetMultiLevelSolver()->GetSolver()->CellVisu("Results/dgh", glDGH, _iter); // Save H & A to disc
+        GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + "/dgh", glDGH, _iter); // Save H & A to disc
 
         GlobalTimer.stop("--> Transport");
 
@@ -320,7 +325,7 @@ void Loop::run(const std::string& problemlabel)
 
         // Visualise sea ice velocity
         //  if(_iter==_niter){
-        GetMultiLevelSolver()->GetSolver()->Visu("Results/v", u, _iter); // Save new u to disc
+        GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + "/v", u, _iter); // Save new u to disc
         // }
         functionals = Functionals(u, f);
 

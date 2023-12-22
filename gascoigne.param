@@ -1,11 +1,12 @@
 //Block Loop
 
-niter       3
+niter     97
 
 
 writevtk    0
 writebupgup 0
 initial file
+resultsdir Result_ref
 
 //initial reload
 //reloadu u.00088.bup
@@ -54,7 +55,7 @@ functional 1 1
 //Block MultiLevelSolver
 
 linearsolve	mg // benchmark
-linearsolve	mg
+linearsolve	direct
 nonlinear_rho	0.1
 nonlinear_tol	1.e-4
 nonlinear_globaltol	1.e-13
@@ -80,7 +81,7 @@ matrixtype block
 
 discname       CGQ1
 
-ndirect     100
+ndirect     100000
 
 iterpre 4
 iterpost 4
@@ -129,11 +130,11 @@ theta_a		0.0
 
 H_i_x_c     1 0
 H_x_c       1 0.3
-H_i_x_s     1 60.
+H_i_x_s     1 500.
 H_x_s       1 0.005
 H_i_y_c     1 0
 H_y_c       1 1.
-H_i_y_s     1 30.
+H_i_y_s     1 500.
 H_y_s       1 0.016667
 
 
