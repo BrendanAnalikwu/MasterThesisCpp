@@ -98,10 +98,6 @@ void Loop::run(const std::string& problemlabel)
     int prerefine;
     string _reloadu, _reloadh, _reloadoldu;
 
-    //
-    DoubleVector H_x_c, H_y_c, H_x_s, H_y_s;
-    DoubleVector H_i_x_c, H_i_y_c, H_i_x_s, H_i_y_s;
-
     // Load parameters from parameter file
     // Each block needs a different scope
     {
@@ -127,36 +123,15 @@ void Loop::run(const std::string& problemlabel)
         FS.NoComplain();
         FS.readfile(_paramfile, "Mesh");
     }
-    map<double, double> H_x_cos;
-    map<double, double> H_y_cos;
-    map<double, double> H_x_sin;
-    map<double, double> H_y_sin;
     {
         DataFormatHandler DFH;
         DFH.insert("deltamin", &DELTAMIN, 0.);
         DFH.insert("Tref", &tref, 0.);
-        DFH.insert("H_i_x_c", &H_i_x_c);
-        DFH.insert("H_x_c", &H_x_c);
-        DFH.insert("H_i_y_c", &H_i_y_c);
-        DFH.insert("H_y_c", &H_y_c);
-        DFH.insert("H_i_x_s", &H_i_x_s);
-        DFH.insert("H_x_s", &H_x_s);
-        DFH.insert("H_i_y_s", &H_i_y_s);
-        DFH.insert("H_y_s", &H_y_s);
         FileScanner FS(DFH);
         FS.NoComplain();
         FS.readfile(_paramfile, "Equation");
         assert(DELTAMIN > 0.0);
         assert(tref > 0.0);
-        assert(H_i_x_c.size()==H_x_c.size());
-        assert(H_i_y_c.size()==H_y_c.size());
-        assert(H_i_x_s.size()==H_x_s.size());
-        assert(H_i_y_s.size()==H_y_s.size());
-
-        for(int i=0; i<H_i_x_c.size(); ++i) { H_x_cos[H_i_x_c[i]] = H_x_c[i]; }
-        for(int i=0; i<H_i_y_c.size(); ++i) { H_y_cos[H_i_y_c[i]] = H_y_c[i]; }
-        for(int i=0; i<H_i_x_s.size(); ++i) { H_x_sin[H_i_x_s[i]] = H_x_s[i]; }
-        for(int i=0; i<H_i_y_s.size(); ++i) { H_y_sin[H_i_y_s[i]] = H_y_s[i]; }
     }
     {
         string discname;
@@ -167,6 +142,7 @@ void Loop::run(const std::string& problemlabel)
         FS.readfile(_paramfile, "Solver");
         assert(discname == "CGQ1" || discname == "CGQ2");
     }
+    FourierSum H_initial("H", _paramfile), A_initial("A", _paramfile);
 
     // vectors for solution and right hand side
     Vector u("u"), f("f"), oldu("oldu"), other("other");
@@ -223,9 +199,8 @@ void Loop::run(const std::string& problemlabel)
         double y = v.y();
 
         // fill H and A with initial values
-        // TODO: make variable
-        glDGH(q, 0) = fourier_sum(H_x_cos, H_x_sin, x) * fourier_sum(H_y_cos, H_y_sin, y);
-        glDGH(q, 1) = 1.0;
+        glDGH(q, 0) = H_initial(x, y);
+        glDGH(q, 1) = A_initial(x, y);
     }
 
     // Fill FV and FV_midpoint mappings
