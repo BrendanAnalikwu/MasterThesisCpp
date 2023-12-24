@@ -279,18 +279,18 @@ void Loop::run(const std::string& problemlabel)
              << "\t" << TIME * tref / 60 / 60 / 24 << " days" << endl;
 
         // FV-transport of sea ice thickness H and concentration A
-        GlobalTimer.start("--> Transport");
-        // Number of subcycles
-        int NSUB = 1;
-
-        double dtFV = DT / NSUB; // Finite volumes time step size
-        // Perform FV step
-        for (int ii = 1; ii <= NSUB; ++ii)
-            FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), dtFV, M);
-
-        GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + "/dgh", glDGH, _iter); // Save H & A to disc
-
-        GlobalTimer.stop("--> Transport");
+//        GlobalTimer.start("--> Transport");
+//        // Number of subcycles
+//        int NSUB = 1;
+//
+//        double dtFV = DT / NSUB; // Finite volumes time step size
+//        // Perform FV step
+//        for (int ii = 1; ii <= NSUB; ++ii)
+//            FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), dtFV, M);
+//
+//        GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + "/dgh", glDGH, _iter); // Save H & A to disc
+//
+//        GlobalTimer.stop("--> Transport");
 
         // End FV-Transport
 

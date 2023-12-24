@@ -1,6 +1,6 @@
 //Block Loop
 
-niter     97
+niter     1
 
 
 writevtk    0
