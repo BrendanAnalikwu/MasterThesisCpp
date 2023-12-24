@@ -21,7 +21,7 @@ using namespace std;
 namespace Gascoigne
 {
 double WindX(double x, double y, double t)
-{  // TODO: customise
+{
     //    return (x-250.)/20.0;
 
     double tP = t;
@@ -152,30 +152,17 @@ public:
 
     double operator()(int comp, const Vertex2d& v) const
     {
-
-
         double SZ = data.rhoa / data.rho * data.Cda * data.Lref;
 
-        double time = TIME * data.Tref;
-        double X = v.x() * data.Lref;
-        double Y = v.y() * data.Lref;
-
-
-        double U_x = WindX(X / 1000, Y / 1000, TIME * data.Tref / (60.0 * 60.0 * 24.0)); // umrechnen in km
-        double U_y = WindY(X / 1000, Y / 1000, TIME * data.Tref / (60.0 * 60.0 * 24.0));// umrechnen in km
-
-
-        double ux = U_x / data.Lref * data.Tref;
-        double uy = U_y / data.Lref * data.Tref;
-
+        double ux = data.Windx(v);
+        double uy = data.Windy(v);
 
         double vw = sqrt(ux * ux + uy * uy);
 
-
         if (comp == 0)
-            return SZ * vw * (ux * cos(data.theta_a) - uy * sin(data.theta_a));
+            return SZ * vw * ux;
         else if (comp == 1)
-            return SZ * vw * (uy * cos(data.theta_a) + ux * sin(data.theta_a));
+            return SZ * vw * uy;
         else
             return 0;
 

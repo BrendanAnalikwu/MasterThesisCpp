@@ -14,6 +14,8 @@ namespace Gascoigne
 {
 void SeaIceData::BasicInit(const ParamFile& paramfile)
 {
+    string coef_name;
+
     DataFormatHandler DFH;
     DFH.insert("v_in", &vin0, 0.);
     DFH.insert("rho", &rho, 0.);
@@ -33,6 +35,8 @@ void SeaIceData::BasicInit(const ParamFile& paramfile)
     DFH.insert("windx", &windx, 0.0);
     DFH.insert("windy", &windy, 0.0);
 
+    DFH.insert("coef_name", &coef_name, "coef.param");
+
     FileScanner FS(DFH);
     FS.NoComplain();
     FS.readfile(paramfile, "Equation");
@@ -46,24 +50,23 @@ void SeaIceData::BasicInit(const ParamFile& paramfile)
 
     MZ = 0.5 * Tref * Tref * Pstern / rho / Lref / Lref;
     std::cout << "Mehlmann-Zahl " << MZ << std::endl;
+
+    ParamFile coef_params(coef_name);
+    Windx = FourierSum("Wx", coef_params);
+    Windy = FourierSum("Wy", coef_params);
+    Oceanx = FourierSum("Ox", coef_params);
+    Oceany = FourierSum("Oy", coef_params);
+
 }
 
 // sea ice mometum equation
 void MyEquation::point(double h, const FemFunction& U, const Vertex2d& v) const
-{  //TODO: customise
+{
     // Stabilisierung muss auch auf Dimensionslose groessen transformiert werden
     h_ = h;
 
-    double X = v.x() * data.Lref;
-    double Y = v.y() * data.Lref;
-    double Lx = 0.5e6;
-    double Ly = 0.5e6;
-
-    double Uw_x = 0.1 * (2 * Y - Ly) / Ly;
-    double Uw_y = (-0.1) * (2 * X - Lx) / Lx;
-
-    uwx = Uw_x * data.Tref / data.Lref / 10;
-    uwy = Uw_y * data.Tref / data.Lref / 10;
+    uwx = data.Oceanx(v);
+    uwy = data.Oceany(v);
 }
 
 /*-----------------------------------------*/

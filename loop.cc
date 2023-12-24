@@ -97,6 +97,7 @@ void Loop::run(const std::string& problemlabel)
     double dtmax, endtime;
     int prerefine;
     string _reloadu, _reloadh, _reloadoldu;
+    string coef_name;
 
     // Load parameters from parameter file
     // Each block needs a different scope
@@ -127,6 +128,7 @@ void Loop::run(const std::string& problemlabel)
         DataFormatHandler DFH;
         DFH.insert("deltamin", &DELTAMIN, 0.);
         DFH.insert("Tref", &tref, 0.);
+        DFH.insert("coef_name", &coef_name, "coef.param");
         FileScanner FS(DFH);
         FS.NoComplain();
         FS.readfile(_paramfile, "Equation");
@@ -142,7 +144,9 @@ void Loop::run(const std::string& problemlabel)
         FS.readfile(_paramfile, "Solver");
         assert(discname == "CGQ1" || discname == "CGQ2");
     }
-    FourierSum H_initial("H", _paramfile), A_initial("A", _paramfile);
+
+    ParamFile coef_params(coef_name);
+    FourierSum H_initial("H", coef_params), A_initial("A", coef_params);
 
     // vectors for solution and right hand side
     Vector u("u"), f("f"), oldu("oldu"), other("other");
@@ -230,10 +234,16 @@ void Loop::run(const std::string& problemlabel)
     // Initialise momentum with initial conditions
 //    InitSolution(u);
     GlobalVector& gu = GetMultiLevelSolver()->GetSolver()->GetGV(u);
-    //TODO: implement initital conditions
+    FourierSum u0_1("u00", coef_params), u0_2("u01", coef_params);
+    for (int i=0; i<M2->nnodes(); i++) {
+        Vertex2d v = M2->vertex2d(i);
+        gu(i, 0) = u0_1(v);
+        gu(i, 1) = u0_2(v);
+    }
+
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
     GetMultiLevelSolver()->GetSolver()->SubtractMean(u);  // Don't know why this. TODO
-    GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + "/initial", u, 0);
+    GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + "/v0", u, 0);
     GetMultiLevelSolver()->Equ(oldu, 1.0, u);  // Save u to oldu
 
 

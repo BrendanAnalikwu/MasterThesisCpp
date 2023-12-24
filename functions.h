@@ -18,6 +18,7 @@ private:
 public:
 
     std::map<double, double> map_x_c, map_y_c, map_x_s, map_y_s;
+    FourierSum() = default;
     FourierSum(const std::string& name, const ParamFile& pf)
     {
         DataFormatHandler DFH;
@@ -31,7 +32,7 @@ public:
         DFH.insert(name + "_y_s", &coef_y_s);
         FileScanner FS(DFH);
         FS.NoComplain();
-        FS.readfile(pf, "Equation");
+        FS.readfile(pf, "Coefficients");
         assert(indices_x_c.size() == coef_x_c.size());
         assert(indices_y_c.size() == coef_y_c.size());
         assert(indices_x_s.size() == coef_x_s.size());
@@ -47,13 +48,14 @@ public:
     {
         return fourier_sum(map_x_c, map_x_s, x) * fourier_sum(map_y_c, map_y_s, y);
     }
+    double inline operator()(const Vertex2d& v) const { return (*this)(v.x(), v.y()); }
 
     static void fill_mapping(std::map<double, double>& mapping, const DoubleVector& indices, const DoubleVector& coef)
     {
         for (int i = 0; i < indices.size(); ++i) { mapping[indices[i]] = coef[i]; }
     }
 
-    static double fourier_sum(const std::map<double, double>& coef_cos, const std::map<double, double>& coef_sin, double x)
+    static double inline fourier_sum(const std::map<double, double>& coef_cos, const std::map<double, double>& coef_sin, double x)
     {
         double res = 0.;
         for (auto it: coef_cos) { res += it.second * cos(it.first * x); }

@@ -10,6 +10,7 @@
 #include  "paramfile.h"
 #include  "equation.h"
 #include  "boundaryequation.h"
+#include "functions.h"
 #include <fstream>
 
 using namespace std;
@@ -78,6 +79,8 @@ public:
 
     // aus der rechten seite
     double rhoa, Cda, theta_a, windx, windy;
+
+    FourierSum Windx, Windy, Oceanx, Oceany;
 
     void BasicInit(const ParamFile& pf);
 };
