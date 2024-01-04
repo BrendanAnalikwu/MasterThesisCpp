@@ -98,6 +98,7 @@ void Loop::run(const std::string& problemlabel)
     int prerefine;
     string _reloadu, _reloadh, _reloadoldu;
     string coef_name;
+    bool _visudgh, _visuv0;
 
     // Load parameters from parameter file
     // Each block needs a different scope
@@ -110,6 +111,8 @@ void Loop::run(const std::string& problemlabel)
         DFH.insert("reloadu", &_reloadu);
         DFH.insert("reloadh", &_reloadh);
         DFH.insert("reloadoldu", &_reloadoldu);
+        DFH.insert("visudgh", &_visudgh, false);
+        DFH.insert("visuv0", &_visuv0, false);
         FileScanner FS(DFH);
         FS.NoComplain();
 
@@ -243,7 +246,7 @@ void Loop::run(const std::string& problemlabel)
 
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
     GetMultiLevelSolver()->GetSolver()->SubtractMean(u);  // Don't know why this. TODO
-//    GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/v0", u, 0);
+    if (_visuv0) GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/v0", u, 0);
     GetMultiLevelSolver()->Equ(oldu, 1.0, u);  // Save u to oldu
 
 
@@ -288,7 +291,7 @@ void Loop::run(const std::string& problemlabel)
 //        for (int ii = 1; ii <= NSUB; ++ii)
 //            FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), dtFV, M);
 //
-//        GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/dgh", glDGH, _iter); // Save H & A to disc
+        if (_visudgh) GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/dgh", glDGH, _iter); // Save H & A to disc
 //
 //        GlobalTimer.stop("--> Transport");
 
