@@ -145,7 +145,7 @@ void Loop::run(const std::string& problemlabel)
         assert(discname == "CGQ1" || discname == "CGQ2");
     }
 
-    ParamFile coef_params(coef_name);
+    ParamFile coef_params(JOB_ARRAY_ID + string("/") + coef_name);
     FourierSum H_initial("H", coef_params), A_initial("A", coef_params);
 
     // vectors for solution and right hand side
@@ -243,7 +243,7 @@ void Loop::run(const std::string& problemlabel)
 
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
     GetMultiLevelSolver()->GetSolver()->SubtractMean(u);  // Don't know why this. TODO
-    GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + "/v0", u, 0);
+//    GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/v0", u, 0);
     GetMultiLevelSolver()->Equ(oldu, 1.0, u);  // Save u to oldu
 
 
@@ -288,7 +288,7 @@ void Loop::run(const std::string& problemlabel)
 //        for (int ii = 1; ii <= NSUB; ++ii)
 //            FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), dtFV, M);
 //
-//        GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + "/dgh", glDGH, _iter); // Save H & A to disc
+//        GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/dgh", glDGH, _iter); // Save H & A to disc
 //
 //        GlobalTimer.stop("--> Transport");
 
@@ -310,7 +310,7 @@ void Loop::run(const std::string& problemlabel)
 
         // Visualise sea ice velocity
         //  if(_iter==_niter){
-        GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + "/v", u, _iter); // Save new u to disc
+        GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/v", u, _iter); // Save new u to disc
         // }
         functionals = Functionals(u, f);
 

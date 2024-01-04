@@ -6,7 +6,7 @@ niter     1
 writevtk    0
 writebupgup 0
 initial file
-resultsdir Result_ref
+resultsdir Results
 
 //initial reload
 //reloadu u.00088.bup

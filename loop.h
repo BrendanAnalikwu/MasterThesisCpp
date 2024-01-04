@@ -16,6 +16,7 @@
 #include "solver.h"
 
 
+extern std::string JOB_ARRAY_ID;
 namespace Gascoigne
 {
 

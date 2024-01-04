@@ -14,32 +14,42 @@ namespace Gascoigne
 {
 void SeaIceData::BasicInit(const ParamFile& paramfile)
 {
-    string coef_name;
+    string coef_name, _s_resultsdir;
 
-    DataFormatHandler DFH;
-    DFH.insert("v_in", &vin0, 0.);
-    DFH.insert("rho", &rho, 0.);
-    DFH.insert("rhow", &rhow, 0.);
-    DFH.insert("Tref", &Tref, 0.0);
-    DFH.insert("Lref", &Lref, 0.0);
-    DFH.insert("Pstern", &Pstern, 2.75e4);
-    DFH.insert("ellipse", &ellipse, 2.0);
-    DFH.insert("C", &C, 20.0);
-    DFH.insert("Cdw", &Cdw, 5.2e-3);
-    DFH.insert("f", &f, 0.0);
-    DFH.insert("theta_w", &theta_w, 0.0);
+    {
+        DataFormatHandler DFH;
+        DFH.insert("v_in", &vin0, 0.);
+        DFH.insert("rho", &rho, 0.);
+        DFH.insert("rhow", &rhow, 0.);
+        DFH.insert("Tref", &Tref, 0.0);
+        DFH.insert("Lref", &Lref, 0.0);
+        DFH.insert("Pstern", &Pstern, 2.75e4);
+        DFH.insert("ellipse", &ellipse, 2.0);
+        DFH.insert("C", &C, 20.0);
+        DFH.insert("Cdw", &Cdw, 5.2e-3);
+        DFH.insert("f", &f, 0.0);
+        DFH.insert("theta_w", &theta_w, 0.0);
 
-    DFH.insert("rhoa", &rhoa, 0.);          // aus Rhs
-    DFH.insert("Cda", &Cda, 0.0);
-    DFH.insert("theta_a", &theta_a, 0.0);
-    DFH.insert("windx", &windx, 0.0);
-    DFH.insert("windy", &windy, 0.0);
+        DFH.insert("rhoa", &rhoa, 0.);          // aus Rhs
+        DFH.insert("Cda", &Cda, 0.0);
+        DFH.insert("theta_a", &theta_a, 0.0);
+        DFH.insert("windx", &windx, 0.0);
+        DFH.insert("windy", &windy, 0.0);
 
-    DFH.insert("coef_name", &coef_name, "coef.param");
+        DFH.insert("coef_name", &coef_name, "coef.param");
 
-    FileScanner FS(DFH);
-    FS.NoComplain();
-    FS.readfile(paramfile, "Equation");
+        FileScanner FS(DFH);
+        FS.NoComplain();
+        FS.readfile(paramfile, "Equation");
+    }
+    {
+        DataFormatHandler DFH;
+        DFH.insert("resultsdir", &_s_resultsdir, "Results");
+
+        FileScanner FS(DFH);
+        FS.NoComplain();
+        FS.readfile(paramfile, "Loop");
+    }
     assert(rho > 0);
     assert(Tref > 0);
     assert(Lref > 0);
@@ -51,12 +61,11 @@ void SeaIceData::BasicInit(const ParamFile& paramfile)
     MZ = 0.5 * Tref * Tref * Pstern / rho / Lref / Lref;
     std::cout << "Mehlmann-Zahl " << MZ << std::endl;
 
-    ParamFile coef_params(coef_name);
+    ParamFile coef_params(_s_resultsdir + string("/") + JOB_ARRAY_ID + string("/") + coef_name);
     Windx = FourierSum("Wx", coef_params);
     Windy = FourierSum("Wy", coef_params);
     Oceanx = FourierSum("Ox", coef_params);
     Oceany = FourierSum("Oy", coef_params);
-
 }
 
 // sea ice mometum equation

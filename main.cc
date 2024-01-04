@@ -12,6 +12,7 @@ using namespace Gascoigne;
 using namespace std;
 
 extern double DELTAMIN;
+string JOB_ARRAY_ID;
 
 /*---------------------------------------------------*/
 
@@ -411,7 +412,7 @@ int main(int argc, char** argv)
     // parameter file as argument
     ParamFile paramfile("gascoigne.param");
     if (argc >= 2)
-        paramfile.SetName(argv[1]);
+        JOB_ARRAY_ID = argv[1];
 
     // define problem
     // sea ice mometum equation
