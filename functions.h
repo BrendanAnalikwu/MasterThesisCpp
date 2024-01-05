@@ -55,6 +55,7 @@ public:
         double range = scaling_max - scaling_min;
         intercept = range / 2. + scaling_min;
         scaling = range / (2. * sigma);
+//        std::cout << scaling << ", " << intercept  << ", " << coef_x_c[0] << std::endl;
 
         fill_mapping(map_x_c, indices_x_c, coef_x_c);
         fill_mapping(map_y_c, indices_y_c, coef_y_c);
@@ -76,7 +77,12 @@ public:
 
     double inline operator()(double x, double y) const
     {
-        return fourier_sum(map_x_c, map_x_s, x) * fourier_sum(map_y_c, map_y_s, y);
+        double res = fourier_sum(map_x_c, map_x_s, x) * fourier_sum(map_y_c, map_y_s, y);
+        res *= scaling;
+        res += intercept;
+        if(lb_set) res = std::max(lb, res);
+        if(ub_set) res = std::min(ub, res);
+        return res;
     }
 
     double inline operator()(const Vertex2d& v) const { return (*this)(v.x(), v.y()); }
@@ -86,16 +92,12 @@ public:
         for (int i = 0; i < indices.size(); ++i) { mapping[indices[i]] = coef[i]; }
     }
 
-    double inline
-    fourier_sum(const std::map<double, double>& coef_cos, const std::map<double, double>& coef_sin, double x) const
+    static double inline
+    fourier_sum(const std::map<double, double>& coef_cos, const std::map<double, double>& coef_sin, double x)
     {
         double res = 0.;
         for (auto it: coef_cos) { res += it.second * cos(it.first * x); }
         for (auto it: coef_sin) { res += it.second * sin(it.first * x); }
-        res *= scaling;
-        res += intercept;
-        if(lb_set) res = std::max(lb, res);
-        if(ub_set) res = std::min(ub, res);
         return res;
     }
 
