@@ -183,8 +183,6 @@ public:
     {
 
         double div = U[0].x() + U[1].y();
-        double shear = sqrt(
-                (U[0].x() - U[1].y()) * (U[0].x() - U[1].y()) + (U[0].y() + U[1].x()) * (U[0].y() + U[1].x()));
         return sqrt(div * div);
     }
 };
@@ -210,8 +208,6 @@ public:
 
     double J(const FemFunction& U, const Vertex2d& v) const
     {
-
-        double div = U[0].x() + U[1].y();
         double shear = sqrt(
                 (U[0].x() - U[1].y()) * (U[0].x() - U[1].y()) + (U[0].y() + U[1].x()) * (U[0].y() + U[1].x()));
         return sqrt(shear * shear);
@@ -248,6 +244,7 @@ public:
     {
         if (v.x() > 0.25 && v.x() < 0.5)
             return rho * (*H)[0].m();
+        return 0;
     }
 };
 
@@ -346,13 +343,13 @@ public:
         double zeta = eta * pow(ellipse, -2);
 
 
-        double S1, S2, sqrS2, DIV;
+        double S1, S2, sqrS2;
         S1 = (eta * (U[0].x() + U[1].y()) - 0.5 * Pstar) / Pstar;
         sqrS2 = sqrt(pow(U[0].x() - U[1].y(), 2) + pow(U[0].y() + U[1].x(), 2));
         S2 = zeta * sqrS2 / Pstar;
 
 
-        DIV = U[0].x() + U[1].y();
+        double DIV = U[0].x() + U[1].y();
 
 
         if (ELLIPSE_OUT.is_open())

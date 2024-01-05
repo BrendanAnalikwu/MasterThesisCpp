@@ -179,7 +179,7 @@ void Loop::run(const std::string& problemlabel)
     int ncells = M2->ncells();  // Number of cells in grid
     int M = sqrt(ncells);  // Number of cells in each direction
     std::cout << "ncells: " << ncells << " " << M << std::endl;
-    assert(ncells = M * M);
+    assert(ncells == M * M);
 
     // Initialise FV and FV_midpoint
     vector<vector<int> > FV(M, vector<int>(M)); // FV[i][j] is the cell number in the discretisation
@@ -250,18 +250,10 @@ void Loop::run(const std::string& problemlabel)
     GetMultiLevelSolver()->Equ(oldu, 1.0, u);  // Save u to oldu
 
 
-    double stepback = 0.0;
     double writenext = 0;
-    int writeiter = 0;
     string res;
 
     nvector<double> functionals;
-
-
-    int timeinc = 0;
-
-    clock_t start, end;
-    double cpu_time_used, a;
 
     TIME = starttime;
 
