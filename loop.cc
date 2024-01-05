@@ -148,7 +148,7 @@ void Loop::run(const std::string& problemlabel)
         assert(discname == "CGQ1" || discname == "CGQ2");
     }
 
-    ParamFile coef_params(JOB_ARRAY_ID + string("/") + coef_name);
+    ParamFile coef_params(_s_resultsdir + string("/") + JOB_ARRAY_ID + string("/") + coef_name);
     FourierSum H_initial("H", coef_params, 0.), A_initial("A", coef_params, 0., 1.);
 
     // vectors for solution and right hand side
