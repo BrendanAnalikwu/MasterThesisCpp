@@ -15,14 +15,15 @@ class FourierSum
 private:
     DoubleVector coef_x_c, coef_y_c, coef_x_s, coef_y_s;
     DoubleVector indices_x_c, indices_y_c, indices_x_s, indices_y_s;
-    double scaling_min, scaling_max, scaling, intercept;
+    double scaling_min{}, scaling_max{}, scaling{}, intercept{}, lb{}, ub{};
+    bool lb_set{}, ub_set{};
 public:
 
     std::map<double, double> map_x_c, map_y_c, map_x_s, map_y_s;
 
     FourierSum() = default;
 
-    FourierSum(const std::string& name, const ParamFile& pf)
+    FourierSum(const std::string& name, const ParamFile& pf, const double lb, const double ub) : lb(lb), ub(ub)
     {
         DataFormatHandler DFH;
         DFH.insert(name + "_i_x_c", &indices_x_c);
@@ -59,6 +60,18 @@ public:
         fill_mapping(map_y_c, indices_y_c, coef_y_c);
         fill_mapping(map_x_s, indices_x_s, coef_x_s);
         fill_mapping(map_y_s, indices_y_s, coef_y_s);
+
+        lb_set = true;
+        ub_set = true;
+    }
+
+    FourierSum(const std::string& name, const ParamFile& pf, const double lb): FourierSum(name, pf, lb, 0.) {
+        ub_set = false;
+    }
+
+    FourierSum(const std::string& name, const ParamFile& pf): FourierSum(name, pf, 0., 0.) {
+        lb_set = false;
+        ub_set = false;
     }
 
     double inline operator()(double x, double y) const
@@ -79,7 +92,11 @@ public:
         double res = 0.;
         for (auto it: coef_cos) { res += it.second * cos(it.first * x); }
         for (auto it: coef_sin) { res += it.second * sin(it.first * x); }
-        return res * scaling + intercept;
+        res *= scaling;
+        res += intercept;
+        if(lb_set) res = std::max(lb, res);
+        if(ub_set) res = std::min(ub, res);
+        return res;
     }
 
 };

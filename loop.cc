@@ -149,7 +149,7 @@ void Loop::run(const std::string& problemlabel)
     }
 
     ParamFile coef_params(JOB_ARRAY_ID + string("/") + coef_name);
-    FourierSum H_initial("H", coef_params), A_initial("A", coef_params);
+    FourierSum H_initial("H", coef_params, 0.), A_initial("A", coef_params, 0., 1.);
 
     // vectors for solution and right hand side
     Vector u("u"), f("f"), oldu("oldu"), other("other");
