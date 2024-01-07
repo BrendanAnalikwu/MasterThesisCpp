@@ -17,8 +17,6 @@ double MyMLS::NewtonUpdate(double& rr, Vector& x, Vector& dx, Vector& r, const V
 
     double nn = NewtonNorm(dx);
 
-    double nnl2 = GetSolver()->GetGV(dx).norm();
-
     double nr = GetSolver(ComputeLevel)->Norm(r);
 
     ostringstream ss;
@@ -127,16 +125,13 @@ void MyMLS::newton(Matrix& A, Vector& u, const Vector& f, Vector& r, Vector& w, 
     DDD = 1.0;
 
     double rho1 = 0.0;
-    double rho2 = 0.0;
     double ET1 = 1.0;
-    double ET2 = 1.0;
     info.reset();
     double rr = NewtonResidual(r, u, f);
     bool reached = info.check(0, rr, 0.);
     NewtonOutput(info);
     NewtonPreProcess(u, f, info);
     nvector<int> nlin, nresi;
-    double res_old, res_new, res_mat;
 
     it = 0.0;
 

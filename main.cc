@@ -349,9 +349,6 @@ public:
         S2 = zeta * sqrS2 / Pstar;
 
 
-        double DIV = U[0].x() + U[1].y();
-
-
         if (ELLIPSE_OUT.is_open())
             ELLIPSE_OUT << v.x() << "\t" << v.y() << "\t" << DELTA << "\t" << S1 << "\t" << S2 << "\t" << DELTA << "\t"
                         << endl;
