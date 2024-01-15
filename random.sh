@@ -14,7 +14,7 @@ dir=Results/$ID
 mkdir -p $dir
 echo '//Block Coefficients' > $dir/coef.param
 
-for var in 'H' 'A' 'u00' 'u01' 'Wx' 'Wy' 'Ox' 'Oy'
+for var in 'H' 'A' 'u00' 'u01'
 do
  for xy in 'x' 'y'
  do
@@ -36,6 +36,19 @@ do
  done
 done
 
+for var in 'Ox' 'Oy'
+do
+ for xy in 'x' 'y'
+ do
+ for cs in 'c' 's'
+ do
+  echo "$var"_i_"$xy"_"$cs" 1 " $(echo "scale=8; e($RANDOM/32768*l(4)+l(3.14159265))" | bc -l )" >> $dir/coef.param
+  echo "$var"_"$xy"_"$cs" 1 " $(echo "scale=8; 2*$RANDOM/32768 -1" | bc )" >> $dir/coef.param
+
+ done
+ done
+done
+
 echo H_min "$(echo "scale=8; .35*$RANDOM/32768 - .1" | bc )" >> $dir/coef.param
 echo H_max "$(echo "scale=8; .35*$RANDOM/32768 + .35" | bc )" >> $dir/coef.param
 
@@ -48,17 +61,21 @@ echo u00_max "$(echo "scale=12; .0002*$RANDOM/32768" | bc )" >> $dir/coef.param
 echo u01_min "$(echo "scale=12; .0002*$RANDOM/32768 - .0002" | bc )" >> $dir/coef.param
 echo u01_max "$(echo "scale=12; .0002*$RANDOM/32768" | bc )" >> $dir/coef.param
 
-echo Wx_min "$(echo "scale=10; .01*$RANDOM/32768 - .015" | bc )" >> $dir/coef.param
-echo Wx_max "$(echo "scale=10; .01*$RANDOM/32768 + .005" | bc )" >> $dir/coef.param
-
-echo Wy_min "$(echo "scale=10; .01*$RANDOM/32768 - .015" | bc )" >> $dir/coef.param
-echo Wy_max "$(echo "scale=10; .01*$RANDOM/32768 + .005" | bc )" >> $dir/coef.param
-
 echo Ox_min "$(echo "scale=13; .000005*$RANDOM/32768 - .00001" | bc )" >> $dir/coef.param
 echo Ox_max "$(echo "scale=13; .000005*$RANDOM/32768 + .000005" | bc )" >> $dir/coef.param
 
 echo Oy_min "$(echo "scale=13; .000005*$RANDOM/32768 - .00001" | bc )" >> $dir/coef.param
 echo Oy_max "$(echo "scale=13; .000005*$RANDOM/32768 + .000005" | bc )" >> $dir/coef.param
+
+
+
+echo '//Block Cyclone' >> $dir/coef.param
+echo 'W_mx '      "$(echo "scale=8; .4 * $RANDOM/32768 + .05" | bc)" >> $dir/coef.param
+echo 'W_my '      "$(echo "scale=8; .4 * $RANDOM/32768 + .05" | bc)" >> $dir/coef.param
+echo 'W_vmax'     "$(echo "scale=8; .015 * $RANDOM/32768 + .005" | bc)" >> $dir/coef.param
+echo 'W_alpha '   "$(echo "scale=8; .523598776*$RANDOM/32768+1.04719755" | bc)" >> $dir/coef.param
+echo 'W_r0 '      "$(echo "scale=8; .09 * $RANDOM/32768 + .01" | bc)" >> $dir/coef.param
+echo 'W_cyclone ' "$(($RANDOM % 2))" >> $dir/coef.param
 
 echo '//Block Nix' >> $dir/coef.param
 

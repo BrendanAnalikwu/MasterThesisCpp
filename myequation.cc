@@ -62,8 +62,7 @@ void SeaIceData::BasicInit(const ParamFile& paramfile)
     std::cout << "Mehlmann-Zahl " << MZ << std::endl;
 
     ParamFile coef_params(_s_resultsdir + string("/") + JOB_ARRAY_ID + string("/") + coef_name);
-    Windx = FourierSum("Wx", coef_params);
-    Windy = FourierSum("Wy", coef_params);
+    Wind = Cyclone(coef_params);
     Oceanx = FourierSum("Ox", coef_params);
     Oceany = FourierSum("Oy", coef_params);
 }

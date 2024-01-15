@@ -102,6 +102,51 @@ public:
     }
 
 };
+
+class Cyclone
+{
+private:
+    double c;
+public:
+    double mx, my, ws, vmax, alpha, r0;
+
+    Cyclone() = default;
+
+    Cyclone(const ParamFile& pf)
+    {
+        bool cyclone;
+        DataFormatHandler DFH;
+        DFH.insert("W_mx", &mx, 50);
+        DFH.insert("W_my", &my, 50);
+        DFH.insert("W_vmax", &vmax, 15);
+        DFH.insert("W_alpha", &alpha, M_PI * 2. / 5.);
+        DFH.insert("W_r0", &r0);
+        DFH.insert("W_cyclone", &cyclone);
+        FileScanner FS(DFH);
+        FS.NoComplain();
+        FS.readfile(pf, "Cyclone");
+
+        if (cyclone) ws = 1.;
+        else ws = -1.;
+        c = vmax * ws / r0 / exp(-1.);
+    }
+
+    double inline x(const Vertex2d& v) const { return x(v.x(), v.y()); }
+
+    double inline y(const Vertex2d& v) const { return y(v.x(), v.y()); }
+
+    double inline x(const double x, const double y) const
+    {
+        return c * (cos(alpha) * (mx - x) + sin(alpha) * (my - y)) *
+               exp(-sqrt((mx - x) * (mx - x) + (my - y) * (my - y)) / r0);
+    }
+
+    double inline y(const double x, const double y) const
+    {
+        return c * (-sin(alpha) * (mx - x) + cos(alpha) * (my - y)) *
+               exp(-sqrt((mx - x) * (mx - x) + (my - y) * (my - y)) / r0);
+    }
+};
 }
 
 #endif //BENCHMARK_FUNCTIONS_H

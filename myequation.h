@@ -81,7 +81,8 @@ public:
     // aus der rechten seite
     double rhoa, Cda, theta_a, windx, windy;
 
-    FourierSum Windx, Windy, Oceanx, Oceany;
+    FourierSum Oceanx, Oceany;
+    Cyclone Wind;
 
     void BasicInit(const ParamFile& pf);
 };
