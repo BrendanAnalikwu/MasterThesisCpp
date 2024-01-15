@@ -137,14 +137,14 @@ public:
 
     double inline x(const double x, const double y) const
     {
-        return c * (cos(alpha) * (mx - x) + sin(alpha) * (my - y)) *
-               exp(-sqrt((mx - x) * (mx - x) + (my - y) * (my - y)) / r0);
+        return c * (cos(alpha) * (x - mx) + sin(alpha) * (y - my)) *
+           exp(-sqrt((x - mx) * (x - mx) + (y - my) * (y - my)) / r0);
     }
 
     double inline y(const double x, const double y) const
     {
-        return c * (-sin(alpha) * (mx - x) + cos(alpha) * (my - y)) *
-               exp(-sqrt((mx - x) * (mx - x) + (my - y) * (my - y)) / r0);
+        return c * (-sin(alpha) * (x - mx) + cos(alpha) * (y - my)) *
+               exp(-sqrt((x - mx) * (x - mx) + (y - my) * (y - my)) / r0);
     }
 };
 }
