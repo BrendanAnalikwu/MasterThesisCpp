@@ -6,7 +6,7 @@ niter     1
 writevtk    0
 writebupgup 0
 initial file
-resultsdir  Results
+resultsdir  /scratch/boanalikwu/Results
 visudgh     true
 visuv0      true
 

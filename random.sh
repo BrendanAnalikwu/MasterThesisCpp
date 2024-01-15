@@ -9,7 +9,7 @@
 #SBATCH --output="Results/slurm-%j.out"
 
 ID="$SLURM_JOB_ID"
-dir=Results/$ID
+dir="/scratch/boanalikwu/Results/$ID"
 
 mkdir -p $dir
 echo '//Block Coefficients' > $dir/coef.param
