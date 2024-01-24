@@ -1,12 +1,12 @@
 //Block Loop
 
-niter     1
+niter     7
 
 
 writevtk    0
 writebupgup 0
 initial file
-resultsdir  /scratch/boanalikwu/Results/big
+resultsdir  /scratch/boanalikwu/Results/timeseries
 visudgh     true
 visuv0      true
 
@@ -19,8 +19,8 @@ visuv0      true
 
 initial boundary
 
-//time 0.0
-time	    343.6
+time 0.0
+//time	    343.6
 dt	    2
 dtmax	    2.
 endtime	    32.0

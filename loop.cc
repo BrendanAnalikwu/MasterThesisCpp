@@ -246,7 +246,7 @@ void Loop::run(const std::string& problemlabel)
 
     GetMultiLevelSolver()->GetSolver()->SetBoundaryVector(u);
     GetMultiLevelSolver()->GetSolver()->SubtractMean(u);  // Don't know why this. TODO
-    if (_visuv0) GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/v0", u, 0);
+    if (_visuv0) GetMultiLevelSolver()->GetSolver()->Visu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/v", u, 0);
     GetMultiLevelSolver()->Equ(oldu, 1.0, u);  // Save u to oldu
 
 
@@ -274,18 +274,15 @@ void Loop::run(const std::string& problemlabel)
              << "\t" << TIME * tref / 60 / 60 / 24 << " days" << endl;
 
         // FV-transport of sea ice thickness H and concentration A
-//        GlobalTimer.start("--> Transport");
-//        // Number of subcycles
-//        int NSUB = 1;
-//
-//        double dtFV = DT / NSUB; // Finite volumes time step size
-//        // Perform FV step
-//        for (int ii = 1; ii <= NSUB; ++ii)
-//            FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), dtFV, M);
-//
-        if (_visudgh) GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/dgh", glDGH, _iter); // Save H & A to disc
-//
-//        GlobalTimer.stop("--> Transport");
+        if (_iter > 1)
+        {
+            GlobalTimer.start("--> Transport");
+
+            FVStep(FV, FV_midpoint, glDGH, GetMultiLevelSolver()->GetSolver()->GetGV(u), DT, M);
+
+            GlobalTimer.stop("--> Transport");
+        }
+        if (_visudgh) GetMultiLevelSolver()->GetSolver()->CellVisu(_s_resultsdir + string("/") + JOB_ARRAY_ID + "/dgh", glDGH, _iter - 1); // Save H & A to disc
 
         // End FV-Transport
 

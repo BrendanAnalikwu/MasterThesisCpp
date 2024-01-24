@@ -154,8 +154,8 @@ public:
     {
         double SZ = data.rhoa / data.rho * data.Cda * data.Lref;
 
-        double ux = data.Wind.x(v);
-        double uy = data.Wind.y(v);
+        double ux = data.Wind.x(v, TIME);
+        double uy = data.Wind.y(v, TIME);
 
         double vw = sqrt(ux * ux + uy * uy);
 
