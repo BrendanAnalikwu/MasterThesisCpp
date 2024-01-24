@@ -108,7 +108,7 @@ class Cyclone
 private:
     double c;
 public:
-    double mx, my, ws, vmax, alpha, r0;
+    double mx, my, ws, vmax, alpha, r0, vx_m, vy_m;
 
     Cyclone() = default;
 
@@ -116,11 +116,13 @@ public:
     {
         bool cyclone;
         DataFormatHandler DFH;
-        DFH.insert("W_mx", &mx, 50);
-        DFH.insert("W_my", &my, 50);
-        DFH.insert("W_vmax", &vmax, 15);
+        DFH.insert("W_mx", &mx, .256);
+        DFH.insert("W_my", &my, .256);
+        DFH.insert("W_vx_m", &vx_m, .0005787037);  // 4e-4 - 8e-4
+        DFH.insert("W_vy_m", &vy_m, .0005787037);
+        DFH.insert("W_vmax", &vmax, .015);
         DFH.insert("W_alpha", &alpha, M_PI * 2. / 5.);
-        DFH.insert("W_r0", &r0);
+        DFH.insert("W_r0", &r0, .1);
         DFH.insert("W_cyclone", &cyclone);
         FileScanner FS(DFH);
         FS.NoComplain();
@@ -131,20 +133,25 @@ public:
         c = vmax * ws / r0 / exp(-1.);
     }
 
-    double inline x(const Vertex2d& v) const { return x(v.x(), v.y()); }
+    double inline x(const Vertex2d& v, const double t) const { return x(v.x(), v.y(), t); }
 
-    double inline y(const Vertex2d& v) const { return y(v.x(), v.y()); }
+    double inline y(const Vertex2d& v, const double t) const { return y(v.x(), v.y(), t); }
 
-    double inline x(const double x, const double y) const
+    double inline x(const double x, const double y, const double t) const
     {
-        return c * (cos(alpha) * (x - mx) + sin(alpha) * (y - my)) *
-           exp(-sqrt((x - mx) * (x - mx) + (y - my) * (y - my)) / r0);
+        double mx_t = mx + vx_m * t;
+        double my_t = my + vy_m * t;
+
+        return c * (cos(alpha) * (x - mx_t) + sin(alpha) * (y - my_t)) *
+           exp(-sqrt((x - mx_t) * (x - mx_t) + (y - my_t) * (y - my_t)) / r0);
     }
 
-    double inline y(const double x, const double y) const
+    double inline y(const double x, const double y, const double t) const
     {
-        return c * (-sin(alpha) * (x - mx) + cos(alpha) * (y - my)) *
-               exp(-sqrt((x - mx) * (x - mx) + (y - my) * (y - my)) / r0);
+        double mx_t = mx + vx_m * t;
+        double my_t = my + vy_m * t;
+        return c * (-sin(alpha) * (x - mx_t) + cos(alpha) * (y - my_t)) *
+               exp(-sqrt((x - mx_t) * (x - mx_t) + (y - my_t) * (y - my_t)) / r0);
     }
 };
 }

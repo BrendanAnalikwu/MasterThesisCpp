@@ -3,13 +3,13 @@
 #SBATCH --partition=compute
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
-#SBATCH --time=30 # default in minutes
+#SBATCH --time=200 # default in minutes
 #SBATCH --account=education-eemcs-msc-am
 #SBATCH --ntasks=1
-#SBATCH --output="Results/big/slurm-%j.out"
+#SBATCH --output="Results/timeseries/slurm-%j.out"
 
 ID="$SLURM_JOB_ID"
-dir="/scratch/boanalikwu/Results/big/$ID"
+dir="/scratch/boanalikwu/Results/timeseries/$ID"
 
 mkdir -p $dir
 echo '//Block Coefficients' > $dir/coef.param
@@ -72,6 +72,8 @@ echo Oy_max "$(echo "scale=13; .00001*$RANDOM/32768 + .000005" | bc )" >> $dir/c
 echo '//Block Cyclone' >> $dir/coef.param
 echo 'W_mx '      "$(echo "scale=8; .4 * $RANDOM/32768 + .05" | bc)" >> $dir/coef.param
 echo 'W_my '      "$(echo "scale=8; .4 * $RANDOM/32768 + .05" | bc)" >> $dir/coef.param
+echo 'W_vx_m '    "$(echo "scale=8; (2 * ($RANDOM % 2) - 1) * (.0004 * $RANDOM/32768 + .0004)" | bc)" >> $dir/coef.param
+echo 'W_vy_m '    "$(echo "scale=8; (2 * ($RANDOM % 2) - 1) * (.0004 * $RANDOM/32768 + .0004)" | bc)" >> $dir/coef.param
 echo 'W_vmax'     "$(echo "scale=8; .015 * $RANDOM/32768 + .005" | bc)" >> $dir/coef.param
 echo 'W_alpha '   "$(echo "scale=8; .523598776*$RANDOM/32768+1.04719755" | bc)" >> $dir/coef.param
 echo 'W_r0 '      "$(echo "scale=8; .1 * $RANDOM/32768 + .05" | bc)" >> $dir/coef.param
