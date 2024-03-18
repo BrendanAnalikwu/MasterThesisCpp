@@ -1,12 +1,12 @@
 //Block Loop
 
-niter     7
+niter     30
 
 
 writevtk    0
 writebupgup 0
 initial file
-resultsdir  /scratch/boanalikwu/Results/timeseries
+resultsdir  /scratch/boanalikwu/Results/physical
 visudgh     true
 visuv0      true
 

@@ -6,10 +6,10 @@
 #SBATCH --time=200 # default in minutes
 #SBATCH --account=education-eemcs-msc-am
 #SBATCH --ntasks=1
-#SBATCH --output="Results/timeseries/slurm-%j.out"
+#SBATCH --output="Results/physical/slurm-%j.out"
 
 ID="$SLURM_JOB_ID"
-dir="/scratch/boanalikwu/Results/timeseries/$ID"
+dir="/scratch/boanalikwu/Results/physical/$ID"
 
 mkdir -p $dir
 echo '//Block Coefficients' > $dir/coef.param
@@ -36,18 +36,14 @@ do
  done
 done
 
-for var in 'Ox' 'Oy'
-do
- for xy in 'x' 'y'
- do
- for cs in 'c' 's'
- do
-  echo "$var"_i_"$xy"_"$cs" 1 " $(echo "scale=8; e($RANDOM/32768*l(4)+l(3.14159265))" | bc -l )" >> $dir/coef.param
-  echo "$var"_"$xy"_"$cs" 1 " $(echo "scale=8; 2*$RANDOM/32768 -1" | bc )" >> $dir/coef.param
-
- done
- done
-done
+echo Ox_i_x_c 1 0 >> $dir/coef.param
+echo Ox_x_c   1 1 >> $dir/coef.param
+echo Ox_i_y_s 1 .1 >> $dir/coef.param
+echo Ox_y_s   1 1. >> $dir/coef.param
+echo Oy_i_x_s 1 .1 >> $dir/coef.param
+echo Oy_x_s   1 1. >> $dir/coef.param
+echo Oy_i_y_c 1 0 >> $dir/coef.param
+echo Oy_y_c   1 1. >> $dir/coef.param
 
 echo H_min "$(echo "scale=8; .35*$RANDOM/32768 - .1" | bc )" >> $dir/coef.param
 echo H_max "$(echo "scale=8; .35*$RANDOM/32768 + .35" | bc )" >> $dir/coef.param
@@ -61,11 +57,10 @@ echo u00_max "$(echo "scale=12; .0001*$RANDOM/32768 + .0001" | bc )" >> $dir/coe
 echo u01_min "$(echo "scale=12; .0001*$RANDOM/32768 - .0002" | bc )" >> $dir/coef.param
 echo u01_max "$(echo "scale=12; .0001*$RANDOM/32768 + .0001" | bc )" >> $dir/coef.param
 
-echo Ox_min "$(echo "scale=13; .00001*$RANDOM/32768 - .000015" | bc )" >> $dir/coef.param
-echo Ox_max "$(echo "scale=13; .00001*$RANDOM/32768 + .000005" | bc )" >> $dir/coef.param
-
-echo Oy_min "$(echo "scale=13; .00001*$RANDOM/32768 - .000015" | bc )" >> $dir/coef.param
-echo Oy_max "$(echo "scale=13; .00001*$RANDOM/32768 + .000005" | bc )" >> $dir/coef.param
+echo Ox_min -.00001 >> $dir/coef.param
+echo Ox_max .00001 >> $dir/coef.param
+echo Oy_min -.00001 >> $dir/coef.param
+echo Oy_max .00001 >> $dir/coef.param
 
 
 
