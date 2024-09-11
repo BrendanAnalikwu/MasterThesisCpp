@@ -1,8 +1,7 @@
 /build/
-/cmake-build-debug/
+/cmake-*/
 /.idea/
-/Results/
 /fv_bench_kinetic.txt
-/Results*/
+/Result*/
 /CMakeFiles/
 CMakeCache.txt
