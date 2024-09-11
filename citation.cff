@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: Data generation for deep learning based sea ice dynamics
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Brendan
+    family-names: Analikwu
+repository: 'https://github.com/BrendanAnalikwu/MasterThesis'
+keywords:
+  - Sea ice dynamics
+  - Gascoigne
+url: "https://github.com/BrendanAnalikwu/MasterThesisGascoigne"
+license: MIT
